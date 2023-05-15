@@ -1,5 +1,4 @@
 import RPi.GPIO as GPIO
-import time
 
 
 class rfp602:
@@ -15,11 +14,5 @@ class rfp602:
     def __del__(self):
         GPIO.cleanup(self.press_pin)
 
-    def active(self):
-        while True:
-            input = GPIO.input(self.press_pin)
-            print("{}".format(input))
-            if (not self.prev_input) and input:
-                print("Under Pressure")
-            self.prev_input = input
-            time.sleep(self.delay)
+    def get_input(self):
+        return GPIO.input(self.press_pin)

@@ -17,13 +17,15 @@ class ws2812b:
         self.strip.begin()
 
     def __del__(self):
-        self.colorWipe(Color(0, 0, 0))
+        self.set_color((0, 0, 0))
 
-    def colorWipe(self, color, wait_ms=20):
+    def set_color(self, color, wait_ms=20):
+        color = Color(color[0], color[1], color[2])
         for i in range(self.strip.numPixels()):
             self.strip.setPixelColor(i, color)
             self.strip.show()
             time.sleep(wait_ms / 1000.0)
 
-    def getStrip(self):
-        return self.strip
+    def set_brightness(self, val):
+        self.strip.setBrightness(val)
+        self.strip.show()

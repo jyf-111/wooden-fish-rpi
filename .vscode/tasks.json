@@ -4,46 +4,57 @@
         {
             "label": "python",
             "type": "shell",
-            "command": "python",
+            "command": "sudo",
             "args": [
+                "python3",
                 "${file}"
             ]
         },
         {
-            "label": "tests.rfp602",
+            "label": "example.rfp602",
             "type": "shell",
             "command": "python",
             "args": [
                 "-m",
-                "tests.rfp602_test"
+                "example.rfp602"
             ]
         },
         {
-            "label": "tests.diode",
+            "label": "example.diode",
             "type": "shell",
             "command": "python",
             "args": [
                 "-m",
-                "tests.diode_test"
+                "example.diode"
             ]
         },
         {
-            "label": "tests.ws2812b",
+            "label": "example.ws2812b",
             "type": "shell",
             "command": "sudo",
             "args": [
                 "python3",
                 "-m",
-                "tests.ws2812b_test"
+                "example.ws2812b"
             ]
         },
         {
-            "label": "tests.motor_28byj48",
+            "label": "example.motor_28byj48",
             "type": "shell",
             "command": "python",
             "args": [
                 "-m",
-                "tests.motor_28byj48_test"
+                "example.motor_28byj48"
+            ]
+        },
+        {
+            "label": "example.pcf85917",
+            "type": "shell",
+            "command": "sudo",
+            "args": [
+                "python3",
+                "-m",
+                "example.pcf8591"
             ]
         }
     ]
