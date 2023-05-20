@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 
-class motor_28byj48:
+class Motor_28byj48:
     def __init__(self, pins):
         self.pins = pins
         GPIO.setwarnings(False)

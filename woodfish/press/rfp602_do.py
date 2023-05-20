@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 
 
-class rfp602:
+class Rfp602:
     prev_input = 0
 
     def __init__(self, press_pin, delay):

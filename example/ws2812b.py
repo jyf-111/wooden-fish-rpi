@@ -1,4 +1,4 @@
-from led.ws2812b import ws2812b
+from woodfish.led.ws2812b import Ws2812b
 from rpi_ws281x import Color
 import time
 
@@ -53,19 +53,19 @@ def theaterChaseRainbow(strip, wait_ms=50):
 
 
 if __name__ == "__main__":
-    ws2812b = ws2812b(60, 18, 255)
+    Ws2812b = Ws2812b(60, 18, 255)
 
     print("Color wipe animations.")
-    ws2812b.set_color((255, 0, 0))  # red wipe
-    ws2812b.set_color((0, 0, 0), 0)
-    ws2812b.set_color((0, 255, 255))  # Blue wipe
-    ws2812b.set_color((0, 0, 0), 30)
-    ws2812b.set_color((255, 0, 255))  # Green wipe
-    ws2812b.set_color((0, 0, 0), 30)
+    Ws2812b.set_color((255, 0, 0))  # red wipe
+    Ws2812b.set_color((0, 0, 0))
+    Ws2812b.set_color((0, 255, 255))  # Blue wipe
+    Ws2812b.set_color((0, 0, 0))
+    Ws2812b.set_color((255, 0, 255))  # Green wipe
+    Ws2812b.set_color((0, 0, 0))
 
     print("Theater chase animations.")
     print("Rainbow animations.")
-    rainbow(ws2812b.strip)
-    ws2812b.set_color((0, 0, 0), 1)
-    rainbowCycle(ws2812b.strip)
-    ws2812b.set_color((0, 0, 0), 1)
+    rainbow(Ws2812b.strip)
+    Ws2812b.set_color((0, 0, 0))
+    rainbowCycle(Ws2812b.strip)
+    Ws2812b.set_color((0, 0, 0))

@@ -1,11 +1,11 @@
-from press.rfp602_do import rfp602
+from woodfish.press.rfp602_do import Rfp602
 import time
 
 if __name__ == "__main__":
-    rfp602 = rfp602(24, 0.1)
+    Rfp602 = Rfp602(24, 0.1)
     try:
         while True:
-            input = rfp602.get_input()
+            input = Rfp602.get_input()
             print("{}".format(input))
             time.sleep(0.1)
     except KeyboardInterrupt:

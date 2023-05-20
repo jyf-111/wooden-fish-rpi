@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 
 
-class diode:
+class Diode:
     def __init__(self, IN):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(IN, GPIO.OUT)

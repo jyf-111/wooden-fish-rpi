@@ -1,8 +1,8 @@
-from led.diode import diode
+from woodfish.led.diode import Diode
 import time
 
 if __name__ == "__main__":
-    diode = diode(7)
-    diode.turn_on()
+    Diode = Diode(7)
+    Diode.turn_on()
     time.sleep(1)
-    diode.turn_off()
+    Diode.turn_off()
