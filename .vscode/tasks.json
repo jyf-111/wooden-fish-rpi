@@ -6,15 +6,16 @@
             "type": "shell",
             "command": "sudo",
             "args": [
-                "python3",
+                "./venv/bin/python",
                 "${file}"
             ]
         },
         {
             "label": "example.rfp602",
             "type": "shell",
-            "command": "python",
+            "command": "sudo",
             "args": [
+                "./venv/bin/python",
                 "-m",
                 "example.rfp602"
             ]
@@ -22,8 +23,9 @@
         {
             "label": "example.diode",
             "type": "shell",
-            "command": "python",
+            "command": "sudo",
             "args": [
+                "./venv/bin/python",
                 "-m",
                 "example.diode"
             ]
@@ -33,7 +35,7 @@
             "type": "shell",
             "command": "sudo",
             "args": [
-                "python3",
+                "./venv/bin/python",
                 "-m",
                 "example.ws2812b"
             ]
@@ -41,8 +43,9 @@
         {
             "label": "example.motor_28byj48",
             "type": "shell",
-            "command": "python",
+            "command": "sudo",
             "args": [
+                "./venv/bin/python",
                 "-m",
                 "example.motor_28byj48"
             ]
@@ -52,7 +55,7 @@
             "type": "shell",
             "command": "sudo",
             "args": [
-                "python3",
+                "./venv/bin/python",
                 "-m",
                 "example.pcf8591"
             ]

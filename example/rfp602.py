@@ -1,4 +1,4 @@
-from press.rfp602 import rfp602
+from press.rfp602_do import rfp602
 import time
 
 if __name__ == "__main__":

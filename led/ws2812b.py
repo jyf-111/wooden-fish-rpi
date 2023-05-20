@@ -1,4 +1,3 @@
-import time
 from rpi_ws281x import PixelStrip, Color
 
 
@@ -19,12 +18,11 @@ class ws2812b:
     def __del__(self):
         self.set_color((0, 0, 0))
 
-    def set_color(self, color, wait_ms=20):
+    def set_color(self, color):
         color = Color(color[0], color[1], color[2])
         for i in range(self.strip.numPixels()):
             self.strip.setPixelColor(i, color)
             self.strip.show()
-            time.sleep(wait_ms / 1000.0)
 
     def set_brightness(self, val):
         self.strip.setBrightness(val)
