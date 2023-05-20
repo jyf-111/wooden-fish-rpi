@@ -1,6 +1,7 @@
 from dotenv import load_dotenv, find_dotenv
 import os
 import io
+import logging
 
 
 class Config:
@@ -25,3 +26,22 @@ class Config:
         self.RPF602_MIN = os.getenv("RPF602_MIN")
         self.RPF602_MAX = os.getenv("RPF602_MAX")
         self.RPF602_TOGGLE = os.getenv("RPF602_TOGGLE")
+        self.LOG = os.getenv("LOG")
+
+    def config_logging(self):
+        levels = {
+            "critical": logging.CRITICAL,
+            "error": logging.ERROR,
+            "warn": logging.WARNING,
+            "warning": logging.WARNING,
+            "info": logging.INFO,
+            "debug": logging.DEBUG,
+        }
+        logging.basicConfig(
+            format="[%(asctime)s %(name)s:%(levelname)s] %(message)s",
+            datefmt="%d-%M-%Y %H:%M:%S",
+            level=levels.get(self.LOG.lower(), logging.INFO),
+        )
+        current_level = logging.getLogger().getEffectiveLevel()
+        level_name = logging.getLevelName(current_level)
+        logging.info("log level %s", level_name)

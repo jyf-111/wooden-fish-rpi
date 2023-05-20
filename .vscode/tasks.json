@@ -7,7 +7,8 @@
             "command": "sudo",
             "args": [
                 "./venv/bin/python",
-                "${file}"
+                "woodfish/main.py",
+                "--log=DEBUG"
             ]
         },
         {

@@ -56,16 +56,16 @@ if __name__ == "__main__":
     Ws2812b = Ws2812b(60, 18, 255)
 
     print("Color wipe animations.")
-    Ws2812b.set_color((255, 0, 0))  # red wipe
-    Ws2812b.set_color((0, 0, 0))
-    Ws2812b.set_color((0, 255, 255))  # Blue wipe
-    Ws2812b.set_color((0, 0, 0))
-    Ws2812b.set_color((255, 0, 255))  # Green wipe
-    Ws2812b.set_color((0, 0, 0))
+    Ws2812b.set_color(255, 0, 0)  # red wipe
+    Ws2812b.set_color(0, 0, 0)
+    Ws2812b.set_color(0, 255, 255)  # Blue wipe
+    Ws2812b.set_color(0, 0, 0)
+    Ws2812b.set_color(255, 0, 255)  # Green wipe
+    Ws2812b.set_color(0, 0, 0)
 
     print("Theater chase animations.")
     print("Rainbow animations.")
     rainbow(Ws2812b.strip)
-    Ws2812b.set_color((0, 0, 0))
+    Ws2812b.set_color(0, 0, 0)
     rainbowCycle(Ws2812b.strip)
-    Ws2812b.set_color((0, 0, 0))
+    Ws2812b.set_color(0, 0, 0)

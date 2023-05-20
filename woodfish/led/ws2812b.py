@@ -1,4 +1,4 @@
-from rpi_ws281x import PixelStrip, Color
+from rpi_ws281x import PixelStrip
 
 
 class Ws2812b:
@@ -21,15 +21,14 @@ class Ws2812b:
         self.strip = PixelStrip(count, pin, frep_hz, dma, invert, brightness, channel)
         # Intialize the library (must be called once before other functions).
         self.strip.begin()
-        self.set_color((255, 255, 255))
+        self.set_color(255, 255, 255)
 
     def __del__(self):
-        self.set_color((0, 0, 0))
+        self.set_color(0, 0, 0)
 
-    def set_color(self, color):
-        color = Color(color[0], color[1], color[2])
+    def set_color(self, r, g, b):
         for i in range(self.strip.numPixels()):
-            self.strip.setPixelColor(i, color)
+            self.strip.setPixelColorRGB(i, r, g, b)
             self.strip.show()
 
     def set_brightness(self, val):
