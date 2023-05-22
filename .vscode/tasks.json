@@ -7,58 +7,7 @@
             "command": "sudo",
             "args": [
                 "./venv/bin/python",
-                "woodfish/main.py",
-                "--log=DEBUG"
-            ]
-        },
-        {
-            "label": "example.rfp602",
-            "type": "shell",
-            "command": "sudo",
-            "args": [
-                "./venv/bin/python",
-                "-m",
-                "example.rfp602"
-            ]
-        },
-        {
-            "label": "example.diode",
-            "type": "shell",
-            "command": "sudo",
-            "args": [
-                "./venv/bin/python",
-                "-m",
-                "example.diode"
-            ]
-        },
-        {
-            "label": "example.ws2812b",
-            "type": "shell",
-            "command": "sudo",
-            "args": [
-                "./venv/bin/python",
-                "-m",
-                "example.ws2812b"
-            ]
-        },
-        {
-            "label": "example.motor_28byj48",
-            "type": "shell",
-            "command": "sudo",
-            "args": [
-                "./venv/bin/python",
-                "-m",
-                "example.motor_28byj48"
-            ]
-        },
-        {
-            "label": "example.pcf85917",
-            "type": "shell",
-            "command": "sudo",
-            "args": [
-                "./venv/bin/python",
-                "-m",
-                "example.pcf8591"
+                "woodfish/main.py"
             ]
         }
     ]
