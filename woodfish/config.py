@@ -1,6 +1,5 @@
 from dotenv import load_dotenv, find_dotenv
 import os
-import io
 import logging
 
 
@@ -14,9 +13,7 @@ class Config:
 
     def load_config(self):
         load_dotenv(find_dotenv(), override=True)
-        self.FILENAME = os.getenv("FILENAME")
-        with io.FileIO(self.FILENAME) as f:
-            self.TXT = f.read().decode()
+        self.FILENAME = os.getenv("FILENAME", None)
 
         self.WS2812B_SIZE = os.getenv("WS2812B_SIZE", 30)
         self.WS2812B_GPIO = os.getenv("WS2812B_GPIO", 18)

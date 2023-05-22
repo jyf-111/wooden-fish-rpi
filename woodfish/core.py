@@ -42,6 +42,7 @@ class Core:
         keyboard = self.keyboard
         rfp602_ao = self.rfp602_ao
         content = Content()
+        content.load_content()
 
         while True:
             value = rfp602_ao.read()
