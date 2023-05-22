@@ -4,6 +4,7 @@ from keyboard.keyboard import Keyboard
 from config import Config
 import logging
 from content import Content
+from keyboard.ble import Ble
 
 
 class Core:
@@ -18,6 +19,11 @@ class Core:
         ws2812b_size = int(self.config.WS2812B_SIZE)
         ws2812b_gpio = int(self.config.WS2812B_GPIO)
         self.ws2812b = Ws2812b(ws2812b_size, ws2812b_gpio)
+
+    def init_ble(self):
+        from threading import Thread
+
+        Thread(target=Ble().run).start()
 
     def init_keyboard(self):
         logging.info("init keyboard")

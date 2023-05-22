@@ -32,15 +32,14 @@ class Content:
         for file in file_list:
             with open(file, "r") as f:
                 content = f.read()
-                content = pinyin.get(content, format="strip").translate(
-                    {
-                        ord(f): ord(t)
-                        for f, t in zip(
-                            """，。！？【】（）％＃＠＆１２３４５６７８９
-                            ０", ",.!?[]()%#@&1234567890"""
-                        )
-                    }
-                )
+                table = {
+                    ord(f): ord(t)
+                    for f, t in zip(
+                        """，。！？【】（）％＃＠＆１２３４５６７８９０""",
+                        """,.!?[]()%#@&1234567890""",
+                    )
+                }
+                content = pinyin.get(content, format="strip").translate(table)
                 content += "\n"
                 self.content += content
                 self.length += len(self.content) + 1

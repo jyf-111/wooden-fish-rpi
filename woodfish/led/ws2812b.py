@@ -18,7 +18,9 @@ class Ws2812b:
         channel=0,
     ):
         # Create NeoPixel object with appropriate configuration.
-        self.strip = PixelStrip(count, pin, frep_hz, dma, invert, brightness, channel)
+        self.strip = PixelStrip(
+            count, pin, frep_hz, dma, invert, brightness, channel
+        )
         # Intialize the library (must be called once before other functions).
         self.strip.begin()
         self.set_color(255, 255, 255)
