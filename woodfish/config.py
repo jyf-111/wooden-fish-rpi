@@ -18,15 +18,13 @@ class Config:
         with io.FileIO(self.FILENAME) as f:
             self.TXT = f.read().decode()
 
-        self.WS2812B_SIZE = os.getenv("WS2812B_SIZE")
-        self.WS2812B_GPIO = os.getenv("WS2812B_GPIO")
+        self.WS2812B_SIZE = os.getenv("WS2812B_SIZE", 30)
+        self.WS2812B_GPIO = os.getenv("WS2812B_GPIO", 18)
 
-        self.BLE_PORT = os.getenv("BLE_PORT")
-
-        self.RPF602_MIN = os.getenv("RPF602_MIN")
-        self.RPF602_MAX = os.getenv("RPF602_MAX")
-        self.RPF602_TOGGLE = os.getenv("RPF602_TOGGLE")
-        self.LOG = os.getenv("LOG")
+        self.RPF602_MIN = os.getenv("RPF602_MIN", 100)
+        self.RPF602_MAX = os.getenv("RPF602_MAX", 256)
+        self.RPF602_TOGGLE = os.getenv("RPF602_TOGGLE", 250)
+        self.LOG = os.getenv("LOG", "INFO")
 
     def config_logging(self):
         levels = {
