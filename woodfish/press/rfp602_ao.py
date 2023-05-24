@@ -1,10 +1,11 @@
 from dac.pcf8591 import Pcf8591
-from multiprocessing import Event, Process
+from threading import Event, Thread
 
 
-class Rfp602_ao(Process):
+class Rfp602_ao(Thread):
     def __init__(self, min, toggle, max, ns) -> None:
-        Process.__init__(self)
+        Thread.__init__(self)
+        self.daemon = True
 
         self.__min = min
         self.__toggle = toggle

@@ -52,5 +52,3 @@ class Core:
             ws2812b.show()
 
             self.rfp602_ao.event.clear()
-
-        [item.join() for item in component]

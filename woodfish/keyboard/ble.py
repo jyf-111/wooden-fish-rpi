@@ -11,6 +11,7 @@ from multiprocessing import Process
 class Ble(Process):
     def __init__(self):
         Process.__init__(self)
+        self.daemon = True
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.bus = dbus.SystemBus()
         Agent(self.bus, "/bluetooth/agent")

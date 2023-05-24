@@ -6,13 +6,14 @@ import os
 import keyboard.keymap as keymap
 from importlib import resources
 import source
-from multiprocessing import Event, Process
 from content import Content
+from threading import Event, Thread
 
 
-class Keyboard(Process):
+class Keyboard(Thread):
     def __init__(self):
-        Process.__init__(self)
+        Thread.__init__(self)
+        self.daemon = True
         bus = dbus.SystemBus()
         bluez = bus.get_object("org.bluez", "/org/bluez")
         manager = dbus.Interface(bluez, "org.bluez.ProfileManager1")
