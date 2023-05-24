@@ -76,7 +76,7 @@ class Keyboard(Thread):
         self.conn_interrupt.send(
             bytes(keymap.convert_char_to_hid(self.content.get_next_char()))
         )
-        self.conn_interrupt.send(bytes([0xA1, 1, 0, 0, 0, 0, 0, 0, 0, 0]))
+        self.conn_interrupt.send(bytes(keymap.convert_char_to_hid("NONE")))
 
     def run(self):
         logging.info("wait for keyboard accept")

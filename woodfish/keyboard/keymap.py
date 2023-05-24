@@ -3,14 +3,14 @@ import logging
 
 # Map modifier keys to array element in the bit array
 modkeys = {
-    "LEFTALT": 5,
-    "LEFTCTRL": 7,
-    "LEFTMETA": 4,
-    "LEFTSHIFT": 6,
-    "RIGHTALT": 1,
-    "RIGHTCTRL": 3,
-    "RIGHTMETA": 0,
-    "RIGHTSHIFT": 2,
+    "LEFTCTRL": 0,
+    "LEFTSHIFT": 1,
+    "LEFTALT": 2,
+    "LEFTMETA": 3,
+    "RIGHTCTRL": 4,
+    "RIGHTSHIFT": 5,
+    "RIGHTALT": 6,
+    "RIGHTMETA": 7,
 }
 
 
@@ -223,16 +223,18 @@ keytable = {
     "ZENKAKUHANKAKU": (148, None),
     "z": (29, None),
     "Z": (29, modkeys["LEFTSHIFT"]),
+    "NONE": (0, None),
 }
 
 
 def convert_char_to_hid(char):
+    print("send", char)
     kc = 0
     mk = 0
     if char in keytable:
         hid_code = keytable[char]
         kc = hid_code[0]
-        mk = 0 if hid_code[1] is None else hid_code[1]
+        mk = 0 if hid_code[1] is None else 1 << hid_code[1]
     else:
         logging.warn("Unknown char: %s", char)
     return [0xA1, 1, mk, 0, kc, 0, 0, 0, 0, 0]
