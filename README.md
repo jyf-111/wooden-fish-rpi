@@ -6,6 +6,18 @@
 ![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)
 ![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)
 
+## Run
+
+```bash
+sudo apt install -y bluetooth pi-bluetooth bluez blueman
+sudo apt install -y libdbus-1-dev libcairo2-dev libgirepository1.0-dev
+sudo pip3 install -r requirements.txt
+sudo raspi-config # 选择 i2c 和 serial port 开启
+
+cd wooden-fish-rpi
+sudo python3 woodfish/main.py
+```
+
 ## Reference
 
 - https://oshwhub.com/oldtreee/dian-zi-mu-yu

@@ -1,24 +1,34 @@
 from dac.pcf8591 import Pcf8591
+from multiprocessing import Event, Process
 
 
-class Rfp602_ao:
-    def __init__(self, range) -> None:
-        self.range = range
-        self.pcf8591 = Pcf8591(1, 0x48)
-        self.current = 0
-        self.prev = 0
+class Rfp602_ao(Process):
+    def __init__(self, min, toggle, max, ns) -> None:
+        Process.__init__(self)
 
-    def read(self):
-        self.prev = self.current
-        self.current = self.pcf8591.read(0)
-        return self.current
+        self.__min = min
+        self.__toggle = toggle
+        self.__max = max
 
-    def map_to_light(self):
-        range = self.range
-        if self.current < range[0]:
-            return 0
-        precent = (self.current * 1.0 - range[0]) / (range[2] - range[0])
-        return int(precent * range[2])
+        self.__current = 0
+        self.__prev = 0
 
-    def is_pressed(self):
-        return self.prev >= self.range[1] and self.current < self.range[1]
+        self.__pcf8591 = Pcf8591(1, 0x48)
+
+        self.event = Event()
+
+        self.ns = ns
+
+    def _read(self):
+        self.__prev = self.__current
+        self.__current = self.__pcf8591.read(0)
+
+    def _is_pressed(self):
+        return self.__prev >= self.__toggle and self.__current < self.__toggle
+
+    def run(self):
+        while True:
+            self._read()
+            if self._is_pressed():
+                self.ns.current = self.__current
+                self.event.set()

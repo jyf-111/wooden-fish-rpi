@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
     print("Theater chase animations.")
     print("Rainbow animations.")
-    rainbow(Ws2812b.strip)
+    rainbow(Ws2812b.__strip)
     Ws2812b.set_color(0, 0, 0)
-    rainbowCycle(Ws2812b.strip)
+    rainbowCycle(Ws2812b.__strip)
     Ws2812b.set_color(0, 0, 0)

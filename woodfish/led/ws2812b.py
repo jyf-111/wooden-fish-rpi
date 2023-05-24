@@ -2,6 +2,8 @@ from rpi_ws281x import PixelStrip
 
 
 class Ws2812b:
+    COLOR = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
+
     # brightness:  Set to 0 for darkest and 255 for brightest
     # frep_hz: LED signal frequency in hertz (usually 800khz)
     # dma: DMA channel to use for generating signal (try 10)
@@ -17,22 +19,39 @@ class Ws2812b:
         invert=False,
         channel=0,
     ):
-        # Create NeoPixel object with appropriate configuration.
-        self.strip = PixelStrip(
+        self.__rgb = (255, 255, 255)
+        self.__brightness = brightness
+
+        self.__strip = PixelStrip(
             count, pin, frep_hz, dma, invert, brightness, channel
         )
-        # Intialize the library (must be called once before other functions).
-        self.strip.begin()
-        self.set_color(255, 255, 255)
+        self.__strip.begin()
 
     def __del__(self):
-        self.set_color(0, 0, 0)
+        for i in range(self.__strip.numPixels()):
+            self.__strip.setPixelColorRGB(i, 0, 0, 0)
+            self.__strip.show()
 
-    def set_color(self, r, g, b):
-        for i in range(self.strip.numPixels()):
-            self.strip.setPixelColorRGB(i, r, g, b)
-            self.strip.show()
+    def show(self):
+        color = self.__rgb
+        brightness = self.__brightness
+        for i in range(self.__strip.numPixels()):
+            self.__strip.setPixelColorRGB(i, color[0], color[1], color[2])
+            self.__strip.setBrightness(brightness)
+        self.__strip.show()
 
-    def set_brightness(self, val):
-        self.strip.setBrightness(val)
-        self.strip.show()
+    @property
+    def color(self):
+        return self.__rgb
+
+    @color.setter
+    def color(self, rgb):
+        self.__rgb = rgb
+
+    @property
+    def brightness(self):
+        return self.__brightness
+
+    @brightness.setter
+    def brightness(self, brightness):
+        self.__brightness = brightness

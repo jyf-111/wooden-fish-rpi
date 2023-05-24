@@ -26,26 +26,27 @@ class Content:
         else:
             file_list.append(self.filename)
 
+        table = {
+            ord(f): ord(t)
+            for f, t in zip(
+                """：；‘’“”、《》【】（）·，。！？％＃＠＆１２３４５６７８９０""",
+                """:;''"",<>[]()`,.!?%#@&1234567890""",
+            )
+        }
         self.content = ""
         self.length = 0
 
         for file in file_list:
             with open(file, "r") as f:
                 content = f.read()
-                table = {
-                    ord(f): ord(t)
-                    for f, t in zip(
-                        """，。！？【】（）％＃＠＆１２３４５６７８９０""",
-                        """,.!?[]()%#@&1234567890""",
-                    )
-                }
                 content = pinyin.get(content, format="strip").translate(table)
                 content += "\n"
                 self.content += content
-                self.length += len(self.content) + 1
+                self.length += len(content)
 
     def get_next_char(self):
         char = self.content[self.idx]
         self.idx = self.idx + 1
-        self.idx = self.idx % self.length
+        if self.idx >= self.length:
+            self.idx = 0
         return char

@@ -2,6 +2,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import dbus
 import dbus.service
 import dbus.mainloop.glib
+from gi.repository import GLib
 import logging
 
 
@@ -10,25 +11,27 @@ class Rejected(dbus.DBusException):
 
 
 class Agent(dbus.service.Object):
-    global bus
+    # dbus.set_default_main_loop(dbus.mainloop.glib.DBusGMainLoop())
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    bus = dbus.SystemBus()
     exit_on_release = True
     agent_interface = "org.bluez.Agent1"
     dev_path = None
     device_obj = None
 
     def set_trusted(self, path):
-        props = dbus.Interface(bus, "org.freedesktop.DBus.Properties")
+        props = dbus.Interface(self.bus, "org.freedesktop.DBus.Properties")
         props.Set("org.bluez.Device1", "Trusted", True)
 
     def dev_connect(self, path):
-        dev = dbus.Interface(bus, "org.bluez.Device1")
+        dev = dbus.Interface(self.bus, "org.bluez.Device1")
         dev.Connect()
 
     def pair_reply(self):
         logging.info("Device paired")
         self.set_trusted(self.dev_path)
         self.dev_connect(self.dev_path)
-        bus.mainloop.quit()
+        GLib.mainloop.quit()
 
     def pair_error(self, error):
         err_name = error.get_dbus_name()
@@ -37,7 +40,7 @@ class Agent(dbus.service.Object):
             self.device_obj.CancelPairing()
         else:
             logging.info("Creating device failed: %s" % (error))
-        bus.mainloop.quit()
+        GLib.mainloop.quit()
 
     def set_exit_on_release(self, exit_on_release):
         self.exit_on_release = exit_on_release
@@ -46,7 +49,7 @@ class Agent(dbus.service.Object):
     def Release(self):
         logging.info("Release")
         if self.exit_on_release:
-            bus.mainloop.quit()
+            GLib.mainloop.quit()
 
     @dbus.service.method(agent_interface, in_signature="os", out_signature="")
     def AuthorizeService(self, device, uuid):

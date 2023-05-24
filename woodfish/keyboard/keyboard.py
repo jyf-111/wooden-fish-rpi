@@ -6,10 +6,13 @@ import os
 import keyboard.keymap as keymap
 from importlib import resources
 import source
+from multiprocessing import Event, Process
+from content import Content
 
 
-class Keyboard:
+class Keyboard(Process):
     def __init__(self):
+        Process.__init__(self)
         bus = dbus.SystemBus()
         bluez = bus.get_object("org.bluez", "/org/bluez")
         manager = dbus.Interface(bluez, "org.bluez.ProfileManager1")
@@ -41,11 +44,9 @@ class Keyboard:
         self.s_interrupt.bind((socket.BDADDR_ANY, self.PORT_INTR))
         self.s_interrupt.listen(5)
 
-    def __del__(self):
-        self.s_interrupt.close()
-        self.s_control.close()
+        self.event = Event()
+        self.content = Content()
 
-    def bootstrap(self):
         os.system("hciconfig hci0 up")
         os.system("hciconfig hci0 name 'woodfish'")
         os.system("hciconfig hci0 class 0x000500")
@@ -55,7 +56,13 @@ class Keyboard:
         os.system("hciconfig hci0 noencrypt")
         os.system("sdptool add SP")
 
-    def accept(self):
+        self.content.load_content()
+
+    def __del__(self):
+        self.s_interrupt.close()
+        self.s_control.close()
+
+    def _accept(self):
         logging.debug("Listening control channel")
         self.conn_control, self.addr_info = self.s_control.accept()
         logging.debug("Connected control channel")
@@ -64,10 +71,18 @@ class Keyboard:
         self.conn_interrupt, self.addr_info = self.s_interrupt.accept()
         logging.debug("Connected interrupt channel")
 
-    def send(self, key):
-        if len(key) != 1:
-            logging.error("str must be 1 char")
-            assert False
-
-        self.conn_interrupt.send(bytes(keymap.convert_char_to_hid(key)))
+    def _send(self):
+        self.conn_interrupt.send(
+            bytes(keymap.convert_char_to_hid(self.content.get_next_char()))
+        )
         self.conn_interrupt.send(bytes([0xA1, 1, 0, 0, 0, 0, 0, 0, 0, 0]))
+
+    def run(self):
+        logging.info("wait for keyboard accept")
+        self._accept()
+        logging.info("keyboard accepted")
+
+        while True:
+            self.event.wait()
+            self._send()
+            self.event.clear()
