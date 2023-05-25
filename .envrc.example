@@ -1,5 +1,4 @@
 echo -e "\e[1;34m##################################################\e[0m"
 echo -e "\e[1;34m#               Welcome to woodfish              #\e[0m"
 echo -e "\e[1;34m##################################################\e[0m"
-source ./venv/bin/activate
 unset PS1

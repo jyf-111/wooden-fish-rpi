@@ -16,7 +16,6 @@ class Pcf8591:
             self.bus.write_byte(self.address, 0x42)
         if chn == 3:
             self.bus.write_byte(self.address, 0x43)
-        self.bus.read_byte(self.address)  # 开始进行读取转换
         return self.bus.read_byte(self.address)
 
     def write(self, val):
