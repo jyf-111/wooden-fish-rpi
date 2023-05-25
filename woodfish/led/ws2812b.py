@@ -19,9 +19,6 @@ class Ws2812b:
         invert=False,
         channel=0,
     ):
-        self.__rgb = (255, 255, 255)
-        self.__brightness = brightness
-
         self.__strip = PixelStrip(
             count, pin, frep_hz, dma, invert, brightness, channel
         )
@@ -32,13 +29,13 @@ class Ws2812b:
             self.__strip.setPixelColorRGB(i, 0, 0, 0)
             self.__strip.show()
 
-    def show(self):
-        color = self.__rgb
-        brightness = self.__brightness
+    async def set_color_and_brightness(
+        self, r=255, g=255, b=255, brightness=255
+    ):
         for i in range(self.__strip.numPixels()):
-            self.__strip.setPixelColorRGB(i, color[0], color[1], color[2])
+            self.__strip.setPixelColorRGB(i, r, g, b)
             self.__strip.setBrightness(brightness)
-        self.__strip.show()
+            self.__strip.show()
 
     @property
     def color(self):

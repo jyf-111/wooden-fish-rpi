@@ -1,4 +1,4 @@
-from woodfish.led.ws2812b import Ws2812b
+from led.ws2812b import Ws2812b
 from rpi_ws281x import Color
 import time
 

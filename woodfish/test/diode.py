@@ -1,4 +1,4 @@
-from woodfish.led.diode import Diode
+from led.diode import Diode
 import time
 
 if __name__ == "__main__":

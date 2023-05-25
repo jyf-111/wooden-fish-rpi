@@ -1,4 +1,4 @@
-from woodfish.dac.pcf8591 import Pcf8591
+from dac.pcf8591 import Pcf8591
 import time
 
 if __name__ == "__main__":

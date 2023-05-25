@@ -1,4 +1,4 @@
-from woodfish.press.rfp602_do import Rfp602
+from press.rfp602_do import Rfp602
 import time
 
 if __name__ == "__main__":
