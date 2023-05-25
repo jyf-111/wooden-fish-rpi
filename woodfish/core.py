@@ -2,14 +2,13 @@ from led.ws2812b import Ws2812b
 from press.rfp602_ao import Rfp602_ao
 from keyboard.keyboard import Keyboard
 from config import Config
-from keyboard.ble import Ble
+from ble.ble import Ble
 import random
 import asyncio
-import logging
 
 
 class Core:
-    def __init__(self):
+    def _bootstrap(self):
         self.config = Config()
         self.config.load_config()
         self.config.config_logging()
@@ -29,11 +28,6 @@ class Core:
         self.rfp602_ao.keyboard = self.keyboard
         self.rfp602_ao.ws2812b = self.ws2812b
 
-    def bootstrap(self):
-        self.ble.start()
-        self.rfp602_ao.start()
-        self.keyboard.accept()
-
     def _map_press_to_light(self, press):
         min_ = int(self.config.RPF602_MIN)
         max_ = int(self.config.RPF602_MAX)
@@ -43,25 +37,27 @@ class Core:
         return ret
 
     async def _handle_keyboard(self):
-        await self.keyboard.send()
+        self.keyboard.send()
 
     async def _handle_ws2812b(self):
         color = random.choice(Ws2812b.COLOR)
         brightness = self._map_press_to_light(self.rfp602_ao.current)
-        await self.ws2812b.set_color_and_brightness(
+        self.ws2812b.set_color_and_brightness(
             color[0], color[1], color[2], brightness
         )
 
     async def handle(self):
         while True:
             self.rfp602_ao.event.wait()
-            logging.debug("Event received")
+
             coroutine = [self._handle_keyboard(), self._handle_ws2812b()]
             await asyncio.gather(*coroutine)
 
             self.rfp602_ao.event.clear()
-            logging.debug("Event cleared")
 
     def run(self):
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.handle())
+        self._bootstrap()
+        items = [self.ble, self.keyboard, self.rfp602_ao]
+        [item.start() for item in items]
+
+        asyncio.run(self.handle())

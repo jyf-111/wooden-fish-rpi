@@ -1,10 +1,10 @@
+import os
 import dbus
 import dbus.service
 import dbus.mainloop.glib
 import logging
 from gi.repository import GLib
-from keyboard.agent import Agent
-
+from ble.agent import Agent
 from multiprocessing import Process
 
 
@@ -15,6 +15,15 @@ class Ble(Process):
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.bus = dbus.SystemBus()
         Agent(self.bus, "/bluetooth/agent")
+
+        os.system("hciconfig hci0 up")
+        os.system("hciconfig hci0 name 'woodfish'")
+        os.system("hciconfig hci0 class 0x000500")
+        os.system("hciconfig hci0 piscan")
+        os.system("hciconfig hci0 sspmode 1")
+        os.system("hciconfig hci0 noauth")
+        os.system("hciconfig hci0 noencrypt")
+        os.system("sdptool add SP")
 
     def run(self):
         mainloop = GLib.MainLoop()

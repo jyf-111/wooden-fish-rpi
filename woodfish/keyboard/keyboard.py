@@ -1,16 +1,22 @@
 import socket
 import logging
 import dbus
-import os
 
 import keyboard.keymap as keymap
 from importlib import resources
 import source
 from content import Content
+from threading import Thread
 
 
-class Keyboard:
+class Keyboard(Thread):
+    PORT_CTRL = 17
+    PORT_INTR = 19
+
     def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
+
         bus = dbus.SystemBus()
         bluez = bus.get_object("org.bluez", "/org/bluez")
         manager = dbus.Interface(bluez, "org.bluez.ProfileManager1")
@@ -24,9 +30,6 @@ class Keyboard:
         uuid = "05262649-d40f-483d-b445-73b000d19028"
         manager.RegisterProfile("/org/bluez/hci0", uuid, opts)
         logging.debug("Registered keyboard profile")
-
-        self.PORT_CTRL = 17
-        self.PORT_INTR = 19
 
         self.s_control = socket.socket(
             socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP
@@ -43,24 +46,12 @@ class Keyboard:
         self.s_interrupt.listen(5)
 
         self.content = Content()
-
-        os.system("hciconfig hci0 up")
-        os.system("hciconfig hci0 name 'woodfish'")
-        os.system("hciconfig hci0 class 0x000500")
-        os.system("hciconfig hci0 piscan")
-        os.system("hciconfig hci0 sspmode 1")
-        os.system("hciconfig hci0 noauth")
-        os.system("hciconfig hci0 noencrypt")
-        os.system("sdptool add SP")
-
         self.content.load_content()
 
     def __del__(self):
-        self.s_interrupt.close()
-        self.s_control.close()
+        self._disconnect()
 
-    def accept(self):
-        logging.debug("Waiting for connection")
+    def _accept(self):
         logging.debug("Listening control channel")
         self.conn_control, self.addr_info = self.s_control.accept()
         logging.debug("Connected control channel")
@@ -68,10 +59,25 @@ class Keyboard:
         logging.debug("Listening interrupt channel")
         self.conn_interrupt, self.addr_info = self.s_interrupt.accept()
         logging.debug("Connected interrupt channel")
-        logging.debug("Connection established")
 
-    async def send(self):
+    def _disconnect(self):
+        if hasattr(self, "conn_control"):
+            self.conn_control.close()
+        if hasattr(self, "conn_interrupt"):
+            self.conn_interrupt.close()
+
+    def send(self):
         self.conn_interrupt.send(
             bytes(keymap.convert_char_to_hid(self.content.get_next_char()))
         )
         self.conn_interrupt.send(bytes(keymap.convert_char_to_hid("NONE")))
+
+    def run(self):
+        logging.info("wait for keyboard accept")
+        while True:
+            try:
+                self._accept()
+                logging.info("keyboard connection accepted")
+            except Exception as e:
+                logging.warn(f"Error occurred: {e}")
+                self._disconnect()
