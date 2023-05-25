@@ -17,6 +17,16 @@ class Keyboard(Thread):
         Thread.__init__(self)
         self.daemon = True
 
+        self.s_control = None
+        self.s_interrupt = None
+        self.content = None
+
+        self.conn_control = None
+        self.conn_interrupt = None
+
+        self._bootstrap()
+
+    def _bootstrap(self):
         bus = dbus.SystemBus()
         bluez = bus.get_object("org.bluez", "/org/bluez")
         manager = dbus.Interface(bluez, "org.bluez.ProfileManager1")
@@ -53,20 +63,24 @@ class Keyboard(Thread):
 
     def _accept(self):
         logging.debug("Listening control channel")
-        self.conn_control, self.addr_info = self.s_control.accept()
-        logging.debug("Connected control channel")
+        self.conn_control, addr_info = self.s_control.accept()
+        logging.debug(f"{addr_info}Connected control channel")
 
         logging.debug("Listening interrupt channel")
-        self.conn_interrupt, self.addr_info = self.s_interrupt.accept()
-        logging.debug("Connected interrupt channel")
+        self.conn_interrupt, addr_info = self.s_interrupt.accept()
+        logging.debug("f{addr_info}Connected interrupt channel")
 
     def _disconnect(self):
         if hasattr(self, "conn_control"):
             self.conn_control.close()
+            self.conn_control = None
         if hasattr(self, "conn_interrupt"):
             self.conn_interrupt.close()
+            self.conn_interrupt = None
 
     def send(self):
+        if self.conn_interrupt is None or self.conn_control is None:
+            return
         self.conn_interrupt.send(
             bytes(keymap.convert_char_to_hid(self.content.get_next_char()))
         )

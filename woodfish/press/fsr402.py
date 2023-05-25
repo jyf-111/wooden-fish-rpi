@@ -1,8 +1,9 @@
 from dac.pcf8591 import Pcf8591
 from threading import Event, Thread
+import logging
 
 
-class Rfp602_ao(Thread):
+class fsr402(Thread):
     def __init__(self, min, toggle, max) -> None:
         Thread.__init__(self)
         self.daemon = True
@@ -28,7 +29,7 @@ class Rfp602_ao(Thread):
     def run(self):
         while True:
             self._read()
-            # logging.debug(self.__current)
+            logging.debug(self.__current)
             if self._is_pressed():
                 self.event.set()
 

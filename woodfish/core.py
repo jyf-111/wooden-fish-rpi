@@ -1,5 +1,5 @@
 from led.ws2812b import Ws2812b
-from press.rfp602_ao import Rfp602_ao
+from press.fsr402 import fsr402
 from keyboard.keyboard import Keyboard
 from config import Config
 from ble.ble import Ble
@@ -23,7 +23,7 @@ class Core:
         min = int(self.config.RPF602_MIN)
         toggle = int(self.config.RPF602_TOGGLE)
         max = int(self.config.RPF602_MAX)
-        self.rfp602_ao = Rfp602_ao(min, toggle, max)
+        self.rfp602_ao = fsr402(min, toggle, max)
 
         self.rfp602_ao.keyboard = self.keyboard
         self.rfp602_ao.ws2812b = self.ws2812b
