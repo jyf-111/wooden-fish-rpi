@@ -23,8 +23,10 @@ drawings:
 transition: slide-left
 # use UnoCSS
 css: unocss
+layout: cover
 ---
-# 基于压力反馈的电子木鱼
+
+# 电子木鱼
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
@@ -33,43 +35,75 @@ css: unocss
 </div>
 
 ---
-layout: image-right
-image: https://ae01.alicdn.com/kf/HTB1TEjqQXXXXXXHXVXXq6xXFXXXb/3-3V-5V-MB102-Breadboard-power-module-MB-102-830-points-Solderless-Prototype-Bread-board-kit.jpg
+layout: two-cols
+---
+<template v-slot:default>
+
+![wakatime](https://wakatime.com/badge/user/cfee0eb2-658b-4917-a1ed-9801e76b961f/project/a15c4e2c-1782-4ebe-8562-53108f3a8e1f.svg)
+
+![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)
+
+![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)
+
+## 物料清单
+
+|                   |     |
+| ----------------- | --- |
+| 树莓派4b          |     |
+| 真实木鱼一个      |     |
+| rfp402压力传感器  |     |
+| pcf8591数模转换器 |     |
+| ws2812b灯带       |     |
+
+</template>
+<template v-slot:right>
+
+## 项目结构
+<br>
+
+<pre>
+├── LICENSE
+├── pyproject.toml
+├── README.md
+├── requirements.txt
+├── run.sh
+└── woodfish
+    ├── main.py     # 主函数
+    ├── core.py     # 核心代码
+    ├── ble/        # 蓝牙代理
+    ├── dac/        # 数模转换器
+    ├── keyboard/   # 键盘
+    ├── led/        # 灯带
+    ├── press/      # 压力传感器
+    ├── source/     # 资源文件
+    ├── config.py   # 配置文件
+    ├── content.py  # 文案
+    └── test/       # 测试
+</pre>
+
+</template>
 ---
 
-# 连接面包板
-
-<br>
+# 软件设计模式
 <br>
 
-- 在准备好所需材料后，接下来需要将它们连接到面包板上。
+## 订阅发布者模式
 
-- 将面包板连接到树莓派的 GPIO 引脚上，使用杜邦线来连接。
+用于实现发布-订阅（Publish-Subscribe）机制。
 
-- 连接完所有的元件后，检查连接来验证电路是否正确连接。
+存在两类角色：
+    <br>
+
+        - 发布者（Publisher）
+        - 订阅者（Subscriber）
+
+- 发布者负责产生事件或消息，并将其发送到一个或多个订阅者。发布者通常不关心订阅者的身份和数量，只需将消息发布到合适的通道或主题（Topic）中。
+
+- 订阅者则通过订阅（Subscribe）感兴趣的通道或主题，以接收发布者发送的消息。订阅者可以选择性地订阅特定的通道，也可以订阅所有发布者的消息。
 
 
 ---
 transition: fade-out
----
-
-# 准备材料
-
-<br>
-
-在制作电子木鱼之前，需要准备以下材料：
-| 材料           | 用途                                     |
-| -------------- | ---------------------------------------- |
-| **树莓派**     | 整个项目的实现平台                       |
-| **面包板**     | 使电路设计和调试变得更加方便             |
-| **压力传感器** | 将压力转化为电信号输出，以便于测量和控制 |
-| **LED 灯**     | 使用 LED灯来计数                         |
-| **蜂鸣器**     | 发出周期性振动声音                       |
-| **杜邦线**     | 在面包板中使用杜邦线连接各个元件         |
-| **外壳**       | 构成木鱼外壳                             |
-
----
-transition: slide-up
 
 level: 2
 ---
@@ -77,89 +111,108 @@ level: 2
 li {
   font-size: 1em;
 }
-blockquote {
-  code {
-    @apply text-teal-500 dark:text-teal-400;
-  }
-}
 </style>
 
-# 编写程序
+# 订阅发布者模式
+
+- 我们的压力传感器扮演的是发布者(publisher)
+- core核心调度扮演的是中间的管道
+- 它将信息经过<code>数模转换器</code>传递到两个个订阅者 (subscriber)<code> ws2812b灯带 </code> <code> 蓝牙键盘</code>
+
+![](https://img.songma.com/wenzhang/20190502/za0u3cl3lur19.png)
+
+
+<style>
+li {
+  font-size: 1em;
+}
+</style>
+---
+
+# 蓝牙连接
+
+<br>
+<br>
+
+- 我们将不使用树莓派提供的蓝牙服务器代理，因为这种方式需要确认蓝牙连接的pin码
+
+- 借鉴了linux bluez蓝牙协议栈的代码，使用python构建了不需要pin码蓝牙服务器代理
+
+- 通过蓝牙连接，我们可以将电子木鱼作为一个蓝牙键盘使用
+- 蓝牙连接选择l2cap协议
+- 树莓派监听 17 19 PSM端口
+<br>
+
+        - 17 PSM端口用于连接
+        - 19 PSM端口用于键盘终端
+---
+
+# 蓝牙发送
 
 <br>
 
-- 在连接完所有的元件后，接下来需要编写程序来控制电子木鱼的运行。
-- 可以使用 Python 编写控制程序，程序可以在树莓派上运行，并通过 GPIO 引脚来控制各个元件
+- 我们使用linux 蓝牙伪装成hid蓝牙键盘
+- 向主机发送hid码进行解析转化成键盘输入
+- 英文原样保留 将汉字转换为拼音和空格的组合
+- 再将他们转换成hid码进行发送
+- 作为接受方的主机会认为是键盘输入来进行相应处理。
+- 我们实际实现的效果是将压力传感器按压一次然后在电脑或手机上输出文案
 
+---
 
-```py
-import RPi.GPIO as GPIO
+# 并发操作
 
-GPIO.setmode(GPIO.BOARD)  # 设置GPIO引脚编号方式
-GPIO.setwarnings(False)  # 禁用警告提示
+<br>
 
-pressure_pin = 11  # 压力传感器连接的GPIO引脚
-GPIO.setup(pressure_pin, GPIO.IN)  # 设置GPIO引脚为输入模式
+## 执行效率
 
-while True:
-    if GPIO.input(pressure_pin) == GPIO.HIGH:  # 如果传感器输出高电平
-        print("有压力")
-    else:
-        print("无压力")
-    time.sleep(0.1)  # 暂停0.1秒，避免读取速度过快
+对于io密集型任务，
+
+- 进程切换的开销相对较大，
+- 线程切换的开销较小，
+- 而协程切换的开销更小。
+
+## 平台和语言支持
+<br>
+
+- 由于python GIL全局解释锁的存在，python的多线程并不能实现真正的并发
+- 所以我们使用了协程来实现并发操作。
+
+---
+
+```mermaid
+sequenceDiagram
+  participant bluetooth_agent
+  participant core
+  participant fsr402
+  participant keyboard
+  participant ws2812b
+  Note over core: 主进程
+  Note over bluetooth_agent: 蓝牙守护进程
+  Note over fsr402: 初始化压力传感器线程
+  Note over keyboard: 初始化键盘线程
+  Note over ws2812b: 初始化灯带
+  loop loop
+      fsr402->core:   按下按键
+      core->keyboard: 协程任务发送hid格式信息
+      core->ws2812b: 协程任务灯带亮
+　end
 ```
 
 ---
-class: px-20
----
 
-# 添加随机变化
+# 遇到的问题
+<br>
+
+## 一开始我们使用单线程，蓝牙传输一个字都有很大的延迟
 
 <br>
 
-为了让电子木鱼更加有趣和生动，我们可以添加一些随机变化。
-例如，可以使用 Python 的 random 模块生成随机数，并根据随机数的值来改变 LED 灯和蜂鸣器的状态。
-
-```py
-import RPi.GPIO as GPIO
-import random
-
-GPIO.setmode(GPIO.BCM) # 设置 GPIO 模式为 BCM
-led_pin = 18 # 设置 GPIO 引脚号
-buzzer_pin = 23
-GPIO.setup(led_pin, GPIO.OUT) # 设置 GPIO 引脚为输出
-GPIO.setup(buzzer_pin, GPIO.OUT)
-
-while True: # 生成随机数并控制 LED 灯和蜂鸣器的状态
-    random_num = random.random()
-    if random_num < 0.5:
-        GPIO.output(led_pin, GPIO.HIGH)
-        GPIO.output(buzzer_pin, GPIO.HIGH)
-    else:
-        GPIO.output(led_pin, GPIO.LOW)
-        GPIO.output(buzzer_pin, GPIO.LOW)
-    time.sleep(1)
-```
-
----
-layout: image-right
-image: https://th.bing.com/th/id/OIP.Pszy-JD0Dq8D-9IBVIYDPAHaFe
----
-
-# 连接扬声器
+- 后来我们将蓝牙代理继承Process类实现进程
+- 压力传感器继承Thread类实现线程
+- 并使用协程管理调度，实现了并发操作
 
 <br>
 
-要连接扬声器，需要使用一个数字输出引脚，并使用一个放大器来放大树莓派输出的信号。
-
-- 连接树莓派的 GPIO 引脚到音频放大器电路板的输入端。
-- 连接电路板的输出端到扬声器的正负极。
-- 在程序中使用 GPIO 引脚来输出音频信号。
-
----
-
-# 使用电子木鱼
-
-<br>
-
-![muyu](https://image.lceda.cn/avatars/2022/6/WNa594jMw2gmVbQKL0PfbAhiWasgkQDx6I2I0EgG.png)
+### 充分利用树莓派多核，实现了蓝牙，压力传感器，键盘
+### 灯带的并发操作，降低了延迟
