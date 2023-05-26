@@ -24,9 +24,6 @@ class Keyboard(Thread):
         self.conn_control = None
         self.conn_interrupt = None
 
-        self._bootstrap()
-
-    def _bootstrap(self):
         bus = dbus.SystemBus()
         bluez = bus.get_object("org.bluez", "/org/bluez")
         manager = dbus.Interface(bluez, "org.bluez.ProfileManager1")
@@ -54,6 +51,9 @@ class Keyboard(Thread):
         self.s_interrupt.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s_interrupt.bind((socket.BDADDR_ANY, self.PORT_INTR))
         self.s_interrupt.listen(5)
+
+        self.conn_control = None
+        self.conn_interrupt = None
 
         self.content = Content()
         self.content.load_content()

@@ -37,7 +37,9 @@ class Core:
         return ret
 
     async def _handle_keyboard(self):
-        self.keyboard.send()
+        cnt = random.randint(1, 10)
+        for _ in range(cnt):
+            self.keyboard.send()
 
     async def _handle_ws2812b(self):
         color = random.choice(Ws2812b.COLOR)

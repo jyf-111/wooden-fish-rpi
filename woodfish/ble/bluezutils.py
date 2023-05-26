@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: LGPL-2.1-or-later
-
 import dbus
 
 SERVICE_NAME = "org.bluez"
